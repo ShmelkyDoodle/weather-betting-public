@@ -1,0 +1,43 @@
+# --- Secrets & credentials (never commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kalshi_*.pem
+
+# --- Runtime data / ledgers ---
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+# pre-migration VACUUM INTO snapshots (scripts/backfill_*)
+*.sqlite3.pre-*
+*.db
+logs/
+*.log
+
+# --- Python ---
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
+
+# one-off script caches
+scripts/.market_geometry.json
+
+# generated reports
+report.html
+reports/

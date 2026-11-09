@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  External watchdog (macOS launchd) — runs every 30 minutes.
+
+  Alerts (ntfy + logs/alerts.log) if the tracker has gone silent (down/asleep/
+  crashed) or a settlement mapping needs review. Runs in its own process so it
+  can catch the tracker being down — which the tracker itself can't report.
+
+  To get phone pushes: pick a hard-to-guess topic, set it in .env
+    WA_NTFY_TOPIC=weatherarb-your-topic-abc123
+  and subscribe to that topic in the free ntfy app. Without it, alerts still go
+  to logs/alerts.log.
+
+  Install:
+    cp deploy/com.weatherarb.watchdog.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.weatherarb.watchdog.plist
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.weatherarb.watchdog.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.weatherarb.watchdog</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/daves_machine/code/weather_betting/watchdog.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/daves_machine/code/weather_betting</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Every 30 minutes. -->
+    <key>StartInterval</key>
+    <integer>1800</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/watchdog.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/watchdog.log</string>
+</dict>
+</plist>

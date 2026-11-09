@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "weather-arb"
+version = "1.0.0"
+description = "Async weather-derivative arbitrage engine for Kalshi/Polymarket."
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.9,<4.0",
+    "aiosqlite>=0.19,<0.21",
+    "cryptography>=42.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["weather_arb*"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+no_implicit_optional = true
+warn_redundant_casts = true
+# Third-party libs without bundled stubs.
+[[tool.mypy.overrides]]
+module = ["aiosqlite.*", "aiohttp.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

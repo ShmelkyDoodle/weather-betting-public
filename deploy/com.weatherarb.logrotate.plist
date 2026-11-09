@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Daily log rotation for the weather-arb launchd logs (macOS).
+
+  Rotates logs/*.log that have grown past the threshold, keeping a few gzip'd
+  generations. Uses copytruncate, so it is safe to run while the tracker and
+  other services hold their log files open.
+
+  Install:
+    cp deploy/com.weatherarb.logrotate.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.weatherarb.logrotate.plist
+
+  Check results:
+    tail -n 20 /Users/daves_machine/code/weather_betting/logs/logrotate.log
+    ls -lh /Users/daves_machine/code/weather_betting/logs/
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.weatherarb.logrotate.plist
+
+  Tune via WA_LOGROTATE_ARGS in .env (e.g. "--max-mb 100 --keep 7"). Adjust the
+  two absolute paths below if the project lives elsewhere.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.weatherarb.logrotate</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/daves_machine/code/weather_betting/logrotate.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/daves_machine/code/weather_betting</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Run every day at 03:30 local time. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/logrotate.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/logrotate.log</string>
+</dict>
+</plist>

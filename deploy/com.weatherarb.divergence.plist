@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OPTIONAL launchd job: the live NWS-vs-WU divergence detector (macOS).
+
+  Long-running, like the tracker: it polls each city's running divergence and
+  pushes an ntfy alert when a divergence / 2F bin-flip newly appears (reusing the
+  tracker's .env, so the same ntfy topic gets the pushes). Read-only -- it never
+  trades. This is a MONITORING aid, not part of the trading engine.
+
+  Install:
+    cp deploy/com.weatherarb.divergence.plist ~/Library/LaunchAgents/
+    launchctl load  ~/Library/LaunchAgents/com.weatherarb.divergence.plist
+    launchctl start com.weatherarb.divergence
+
+  Status / logs:
+    launchctl list | grep weatherarb
+    tail -f /Users/daves_machine/code/weather_betting/logs/divergence.log
+
+  Stop / uninstall:
+    launchctl stop   com.weatherarb.divergence
+    launchctl unload ~/Library/LaunchAgents/com.weatherarb.divergence.plist
+
+  Customize (optional): set WA_DIVERGENCE_ARGS in .env, e.g.
+    WA_DIVERGENCE_ARGS="--interval 300 --city DEN --city CHI --city MIA"
+  Adjust the two absolute paths below if the project lives elsewhere.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.weatherarb.divergence</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/daves_machine/code/weather_betting/divergence_watch.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/daves_machine/code/weather_betting</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Don't hammer restarts if it crash-loops. -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/divergence.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/divergence.log</string>
+</dict>
+</plist>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Weekly dashboard refresh (macOS launchd).
+
+  Regenerates report.html every Monday at 08:00 (and once on load) and keeps a
+  dated copy under reports/ so you can flip through week by week.
+
+  Install:
+    cp deploy/com.weatherarb.weekly.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.weatherarb.weekly.plist
+
+  Then each Monday just open the freshest dashboard:
+    open /Users/daves_machine/code/weather_betting/report.html
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.weatherarb.weekly.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.weatherarb.weekly</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/daves_machine/code/weather_betting/weekly.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/daves_machine/code/weather_betting</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Monday (Weekday 1) at 08:00 local time. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/weekly.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/weekly.log</string>
+</dict>
+</plist>

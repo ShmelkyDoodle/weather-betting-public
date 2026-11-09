@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd job to keep the weather-arb tracker running for the month (macOS).
+
+  Install:
+    mkdir -p /Users/daves_machine/code/weather_betting/logs
+    cp deploy/com.weatherarb.tracker.plist ~/Library/LaunchAgents/
+    launchctl load  ~/Library/LaunchAgents/com.weatherarb.tracker.plist
+    launchctl start com.weatherarb.tracker
+
+  Status / logs:
+    launchctl list | grep weatherarb
+    tail -f /Users/daves_machine/code/weather_betting/logs/tracker.out.log
+
+  Stop / uninstall:
+    launchctl stop   com.weatherarb.tracker
+    launchctl unload ~/Library/LaunchAgents/com.weatherarb.tracker.plist
+
+  KeepAlive restarts the process if it ever exits; RunAtLoad starts it on login.
+  Adjust the two absolute paths below if the project lives elsewhere.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.weatherarb.tracker</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/daves_machine/code/weather_betting/run.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/daves_machine/code/weather_betting</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Don't hammer restarts if it crash-loops. -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/tracker.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/tracker.err.log</string>
+</dict>
+</plist>

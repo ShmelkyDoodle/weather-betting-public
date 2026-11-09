@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Daily settlement-mapping verification (macOS launchd).
+
+  Runs `verify_mappings` once a day (and at load) and appends results to
+  logs/verify.log. Exit code is non-zero if any series->station mapping can't
+  be confirmed against Kalshi's live rules. This is a SECONDARY check: the main
+  tracker already self-verifies daily and auto-disables mismatched series.
+
+  Install:
+    cp deploy/com.weatherarb.verify.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.weatherarb.verify.plist
+
+  Check results:
+    tail -n 40 /Users/daves_machine/code/weather_betting/logs/verify.log
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.weatherarb.verify.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.weatherarb.verify</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/daves_machine/code/weather_betting/verify.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/daves_machine/code/weather_betting</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Run every day at 09:05 local time. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>5</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/verify.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/daves_machine/code/weather_betting/logs/verify.log</string>
+</dict>
+</plist>
